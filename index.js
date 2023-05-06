@@ -29,7 +29,7 @@ async function main() {
     `;
 
     try {
-      await client.query(query, [word, ...vectorValues]);
+      await client.query(query, [word, ...vectorValues.map(parseFloat)]);
     } catch (err) {
       console.error(`Error inserting word "${word}":`, err);
     }
