@@ -88,3 +88,24 @@ PGPORT=5432
 You can add the password if you have one, but be sure to modify the `index.js` file to include it.
 
 Then, run the script with `node index.js` or `npm start`. It might take a while to run, but it will populate the table with all the words and their vectors.
+
+After it is done, if you want you can additionally create a table for the average vector values of each word. This is useful for when you want to find the average vector value of a sentence. To do this, run the following command:
+
+```sql
+CREATE TABLE word_tokens (
+  word VARCHAR NOT NULL,
+  token FLOAT NOT NULL
+);
+
+CREATE INDEX idx_word_tokens_word ON word_tokens (word);
+
+INSERT INTO word_tokens (word, token)
+SELECT word, (
+  (vector1 + vector2 + vector3 + vector4 + vector5 + vector6 + vector7 + vector8 + vector9 + vector10 +
+  vector11 + vector12 + vector13 + vector14 + vector15 + vector16 + vector17 + vector18 + vector19 + vector20 +
+  vector21 + vector22 + vector23 + vector24 + vector25 + vector26 + vector27 + vector28 + vector29 + vector30 +
+  vector31 + vector32 + vector33 + vector34 + vector35 + vector36 + vector37 + vector38 + vector39 + vector40 +
+  vector41 + vector42 + vector43 + vector44 + vector45 + vector46 + vector47 + vector48 + vector49 + vector50) / 50
+) AS token
+FROM word_vectors;
+```
