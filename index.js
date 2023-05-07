@@ -24,7 +24,7 @@ async function main() {
     const [word, ...vectorValues] = line.trim().split(" ");
 
     const query = `
-      INSERT INTO word_vectors (word, ${vectorColumns()})
+      INSERT INTO word_vectors_300 (word, ${vectorColumns()})
       VALUES ($1, ${vectorValues.map((_, i) => `$${i + 2}`).join(", ")})
     `;
 
@@ -39,7 +39,7 @@ async function main() {
 }
 
 function vectorColumns() {
-  return Array.from({ length: 50 }, (_, i) => `vector${i + 1}`).join(", ");
+  return Array.from({ length: 300 }, (_, i) => `vector${i + 1}`).join(", ");
 }
 
 main().catch(console.error);
