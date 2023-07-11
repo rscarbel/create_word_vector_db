@@ -7,7 +7,7 @@ const client = new Client({
   user: process.env.PGUSER,
   host: process.env.PGHOST,
   database: process.env.PGDATABASE,
-  password: "",
+  password: process.env.PGPASSWORD,
   port: process.env.PGPORT,
 });
 
@@ -23,9 +23,14 @@ async function main() {
   for await (const line of rl) {
     const [word, ...vectorValues] = line.trim().split(" ");
 
+    // Skip words that are not strictly lowercase
+    if (!/^[a-z]+$/.test(word)) continue;
+
     const query = `
-      INSERT INTO word_vectors_300 (word, ${vectorColumns()})
-      VALUES ($1, ${vectorValues.map((_, i) => `$${i + 2}`).join(", ")})
+      INSERT INTO word_vectors (word, vector)
+      VALUES ($1, ARRAY[${vectorValues
+        .map((_, i) => `$${i + 2}`)
+        .join(", ")}]::float[])
     `;
 
     try {
@@ -36,10 +41,6 @@ async function main() {
   }
 
   await client.end();
-}
-
-function vectorColumns() {
-  return Array.from({ length: 300 }, (_, i) => `vector${i + 1}`).join(", ");
 }
 
 main().catch(console.error);
